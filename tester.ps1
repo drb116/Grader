@@ -23,6 +23,15 @@ for ($i=0; $i -lt $files.length; $i++) {
 	#echo $files[$i] > $classMateFile
 	$fileshort = $path + $files[$i]
 	$filefull = $fileshort + ".java"
+	
+	$text = Get-Content -Path $filefull -TotalCount 1
+	if ($text.StartsWith("package")){
+		get-content $filefull |
+    		select -Skip 1 |
+    		set-content "$file-temp"
+		move "$file-temp" $filefull -Force
+	}
+
 	javac -cp $classpath $filefull
 	java -cp $classpath $files[$i] >> $outfile
 }
